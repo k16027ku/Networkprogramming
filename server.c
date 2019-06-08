@@ -19,20 +19,21 @@ void commun(int sock){
 	send(sock,buf,strlen(buf),0);
 }
 int main(int argc, char **argv){
-	int cliSock;               
+	int cliSock;  
 	int servSock=socket(PF_INET,SOCK_STREAM,0);
 	struct sockaddr_in servAddress;
 	struct sockaddr_in clientAddress;
 	unsigned int szClientAddr;
-	servAddress.sin_family=AF_INET;
-	servAddress.sin_addrs_addr=htonl(INADDR_ANY);
-	servAddress.sin_port=htons(10001);
-	bind(servSock(struct sockaddr*)&servAddress,sizeof(servAddress));
-	listen(servSock.5);
-	wlile(1){
-		szClientaddr=sizeof(clientAddress);
+	servAddress.sin_family= AF_INET; 
+	servAddress.sin_addr.s_addr= htonl(INADDR_ANY); 
+	servAddress.sin_port= htons(10001);
+
+	bind(servSock,(struct sockaddr*)&servAddress,sizeof(servAddress));
+	listen(servSock,5);
+	while(1){
+		szClientAddr=sizeof(clientAddress);
 		cliSock=accept(servSock,(struct sockaddr*)&clientAddress,&szClientAddr);
-		commum(cliSock);
+		commun(cliSock);
 	}
 	
 	
