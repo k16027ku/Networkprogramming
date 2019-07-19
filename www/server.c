@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdlib.h>
-
+#include <regex.h>
 #define BUF_SIZE 256
 
 void DieWithError(char *errorMessage){
@@ -19,17 +19,37 @@ void commun(int sock) {
 	char buf2[2*BUF_SIZE];
     int len_r;
 	char response[BUF_SIZE];
+	char*uri;
 	buf_old[0]='\0';
+	regex_t regBuf;
+	regmatch_t regMatch[1];
+	char result[100];
+	result[0]='\0';
+	const char*pattern ="GET[^\\n]+HTTP";
+		if(regcomp(&regBuf,pattern,REG_EXTENDED|REG_NEWLINE) !=0){
+			DiewithError("regcomp failed");
+		}
     while((len_r = recv(sock, buf, BUF_SIZE, 0)) > 0){
         buf[len_r] = '\0';
     	sprintf(buf2,"%s%s",buf_old,buf);
-       
+    	if(regexec(&regBuf,buf2,1,regMatch,0) !=0){
+    		int starIndex=regMatch[0].rm_so;
+    		int eldIndex=regMatch[0].rm_eo;
+    		strncpy(result,buf2+starIndex,eldIndex-starIndex);
+    	}
         if (strstr(buf2, "\r\n\r\n")) {
             break;
         }
     	sprintf(buf_old,"%s",buf);
     }
-
+	regfree(&regBuf);
+	if(result[0]!=0){
+		uri=strtok(result," ");
+		uri=strtok(NULL," ");
+		printf("%s\n",uri);
+		}else{
+		DieWithError("N0 URI");
+	}
     if (len_r <= 0)
         DieWithError("received() failed.");
     
