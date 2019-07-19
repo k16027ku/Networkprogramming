@@ -15,7 +15,7 @@ void DieWithError(char *errorMessage){
 
 void commun(int sock) {
     char buf[BUF_SIZE];
-	 char buf_old[BUF_SIZE];
+	char buf_old[BUF_SIZE];
 	char buf2[2*BUF_SIZE];
     int len_r;
 	char response[BUF_SIZE];
@@ -27,7 +27,7 @@ void commun(int sock) {
 	result[0]='\0';
 	const char*pattern ="GET[^\\n]+HTTP";
 		if(regcomp(&regBuf,pattern,REG_EXTENDED|REG_NEWLINE) !=0){
-			DiewithError("regcomp failed");
+			DieWithError("regcomp failed");
 		}
     while((len_r = recv(sock, buf, BUF_SIZE, 0)) > 0){
         buf[len_r] = '\0';
